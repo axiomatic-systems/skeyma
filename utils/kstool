@@ -1,0 +1,52 @@
+#! /usr/bin/env node
+
+keywrap = require('./../lib/keywrap.js');
+
+function printUsageAndExit() {
+    console.log("kstool <command> [options]");
+    process.exit(0);
+}
+
+function doWrap(args) {
+    if (args.length != 3 || args[0] != '--kek') {
+        console.log("invalid arguments for 'wrap' command");
+        process.exit(1);
+    }
+    var kek = args[1];
+    var key = args[2];
+    var wrapped = keywrap.wrapKey(key, kek);
+    console.log(wrapped.toString('hex'));
+}
+
+function doUnwrap(args) {
+    if (args.length != 3 || args[0] != '--kek') {
+        console.log("invalid arguments for 'unwrap' command");
+        process.exit(1);
+    }
+    var kek = args[1];
+    var ek = args[2];
+    var unwrapped = keywrap.unwrapKey(ek, kek);
+    if (!unwrapped) {
+        console.log("ERROR: cannot unwrap key");
+        process.exit(1);
+    }
+    console.log(unwrapped.toString('hex'));
+}
+
+if (process.argv.length < 3) {
+    printUsageAndExit();
+}
+
+var command = process.argv[2];
+switch (command) {
+    case "wrap":
+        doWrap(process.argv.slice(3));
+        break;
+
+    case "unwrap":
+        doUnwrap(process.argv.slice(3));
+        break;
+
+    default:
+        console.log("unknown command");
+}

@@ -1,4 +1,4 @@
 skeyma
 ======
 
-Simple Key Manager
+Simple Key Management Server
