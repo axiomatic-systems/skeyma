@@ -12,7 +12,7 @@ A Key object has the following properties:
   * KID (Unique)
   * Key Value (byte array, encrypted with KEK). This value is not stored on the server
   * EK (encrypted representation of the Value). This is stored on the server
-  * KEKID (String that identifies a KEK. May be derived from KEK through a one-way function)
+  * KEK_ID (String that identifies a KEK. May be derived from KEK through a one-way function)
   * Info (arbitrary string)
   * Content ID (arbitrary string used to remember the association of the key with a specific content/file)
   * Expiration (if not null, the date/time at which the key object expired; it may be removed automatically by the server)
