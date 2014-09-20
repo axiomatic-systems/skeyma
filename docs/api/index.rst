@@ -48,7 +48,7 @@ Common API parameters
 Optional API parameters and extensions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Some implementations of the SKM API require API callers to authenticate themselves. This may be implemented in a number of different ways, including using a URL query parameter (like for example an API key passed in a query parameter, named 'apiKey', 'customerAuthenticator', or something similar).
+.. note:: Some implementations of the SKM API require API callers to authenticate themselves. This may be implemented in a number of different ways, including using a URL query parameter (like for example an API key passed in a query parameter, named ``apiKey``, ``customerAuthenticator``, or something similar).
 
 Special KID syntax
 ^^^^^^^^^^^^^^^^^^
@@ -56,6 +56,11 @@ Special KID syntax
 In order to facilitate the work of API clients, a 16-byte KID can be replaced by a ``^`` character followed by a string. In that case, the KID is simply computed as the 16-byte truncated SHA1 hash of the string.
 
 For example, if the KID is specified as the string ``^kid1``, the actual KID value is ``80ea8bc8a58f990ad1f76bc665b30bfa``.
+
+Root URL
+^^^^^^^^
+
+.. note:: The URLs below are relative to a root URL for the Key Management Service on a server. In these examples, the root URL path is ``/``. But a server may use a different root URL path. For example, if the Key Management Service on a server named ``skm.example.com`` is at a root URL path ``services/skm``, then the URL relative path ``keys/{kid}`` would result in a final URL ``http://skm.example.com/services/skm/keys/{kid}``
 
 API URLs
 ^^^^^^^^

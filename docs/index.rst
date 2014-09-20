@@ -9,4 +9,5 @@ Contents:
    :maxdepth: 3
 
    api/index
+   api/examples
 
