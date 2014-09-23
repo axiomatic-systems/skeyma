@@ -13,4 +13,3 @@ Contents:
 
    api/index
    api/examples
-
