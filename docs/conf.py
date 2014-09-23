@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# SKeyMa Simple Key Management Server documentation build configuration file, created by
+# SKM Simple Key Management API build configuration file, created by
 # sphinx-quickstart on Mon Sep  8 15:50:41 2014.
 #
 # This file is execfile()d with the current directory set to its
@@ -43,7 +43,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'SKeyMa Simple Key Management Server'
+project = u'SKM Simple Key Management API'
 copyright = u'2014, Axiomatic Systems'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -179,7 +179,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'SKeyMaSimpleKeyManagementServerdoc'
+htmlhelp_basename = 'SKM'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -199,7 +199,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'SKeyMaSimpleKeyManagementServer.tex', u'SKeyMa Simple Key Management Server Documentation',
+  ('index', 'SKM.tex', u'SKM Simple Key Management API',
    u'Axiomatic Systems', 'manual'),
 ]
 
@@ -229,7 +229,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'skeymasimplekeymanagementserver', u'SKeyMa Simple Key Management Server Documentation',
+    ('index', 'SKM', u'SKM Simple Key Management API',
      [u'Axiomatic Systems'], 1)
 ]
 
@@ -243,8 +243,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'SKeyMaSimpleKeyManagementServer', u'SKeyMa Simple Key Management Server Documentation',
-   u'Axiomatic Systems', 'SKeyMaSimpleKeyManagementServer', 'One line description of project.',
+  ('index', 'SKM', u'SKM Simple Key Management API',
+   u'Axiomatic Systems', 'SKM Simple Key Management API', 'SKM Simple Key Management API',
    'Miscellaneous'),
 ]
 

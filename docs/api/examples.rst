@@ -34,7 +34,7 @@ Get a key by KID, with server auto-creation of the key if it does not exist
 ---------------------------------------------------------------------------
 
 POST a body with a partial JSON Key Object, including a ``kid`` field.
-If a Key Object with that KID already exists on the server, that object is returned, with an ``HTTP 200` response code. If no such Key Object already exists, a new one is created, with a new random key value.
+If a Key Object with that KID already exists on the server, that object is returned, with an ``HTTP 200`` response code. If no such Key Object already exists, a new one is created, with a new random key value.
 
 Because the server only stores encrypted keys, the ``kek`` parameter is required
 
