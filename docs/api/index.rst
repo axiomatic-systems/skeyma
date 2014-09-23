@@ -29,8 +29,8 @@ A Key object has the following properties:
       "kekId":      <string> // KEK identifier
       "info":       <string> // (optional)
       "contentId":  <string> // (optional)
-      "expiration": <date>   // (optional) expiration date of the object
-      "lastUpdate": <date>   // (server-assigned)
+      "expiration": <date>   // (optional) expiration date of the object (ISO 8601 Extended Format)
+      "lastUpdate": <date>   // (server-assigned) (ISO 8601 Extended Format)
   }
 
 Encrypted vs Cleartext Key Values

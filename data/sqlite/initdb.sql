@@ -4,7 +4,7 @@ CREATE TABLE Keys (
   kekId varchar(64),
   info blob,
   contentId blob,
-  lastUpdate timestamp(12),
-  expiration timestamp(12),
+  lastUpdate integer,
+  expiration integer,
   PRIMARY KEY(kid) 
 );
