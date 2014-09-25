@@ -3,8 +3,8 @@ SKM REST API
 
 The SKM API is an interface to a remote or local storage and management of cryptographic keys (media encryption keys for example).
 Each Key object has a unique key ID (KID) and a value (typically a 16-byte random number, like an AES-128 cipher key).
-Keys are stored encrypted with a KEK (Key Encryption Key) using a key wrapping algorithm (AES Key Wrap, :RFC:`3394`). Each KEK has a corresponding KEKID (Key Encryption Key ID) which can be caller-asigned, or automatically computed by the server by deriving from the KEK value using a one way function.
-The server does not store the KEKs. Keys can be stored and retrieved in their encrypted form (in this case it is up to the caller of the API to perform the key wrapping and/or unwrapping), or they can be stored and retrieved in cleartext form by passing the KEK as an API parameter whenever needed (this this case, it is the server that performs the key wrapping and/or unwrapping).
+Keys are stored encrypted with a KEK (Key Encryption Key) using a key wrapping algorithm (AES Key Wrap, :RFC:`3394`). Each KEK has a corresponding KEKID (Key Encryption Key ID) which can be caller-assigned, or automatically computed by the server by deriving from the KEK value using a one way function.
+The server does not store the KEKs. Keys can be stored and retrieved in their encrypted form (in this case it is up to the caller of the API to perform the key wrapping and/or unwrapping), or they can be stored and retrieved in clear-text form by passing the KEK as an API parameter whenever needed (this this case, it is the server that performs the key wrapping and/or unwrapping).
 
 Data Model
 ----------
@@ -33,9 +33,9 @@ A Key object has the following properties:
       "lastUpdate": <date>   // (server-assigned) (ISO 8601 Extended Format)
   }
 
-Encrypted vs Cleartext Key Values
+Encrypted vs Clear-text Key Values
 ---------------------------------
-Keys are always stored on the server in their encrypted form. When Key values are exchanged through the API (either sent or received), they may be expressed either in their encrypted form (AES Key Wrap with a KEK), or in their raw cleartext form. If Key values are exchanged in their encrypted form, it is up to the caller to wrap or unwrap the key values with the appropriate KEK. If a ``kek`` URL query parameter is present, the server will automatically perform the Key value wrapping or unwrapping.
+Keys are always stored on the server in their encrypted form. When Key values are exchanged through the API (either sent or received), they may be expressed either in their encrypted form (AES Key Wrap with a KEK), or in their raw clear-text form. If Key values are exchanged in their encrypted form, it is up to the caller to wrap or unwrap the key values with the appropriate KEK. If a ``kek`` URL query parameter is present, the server will automatically perform the Key value wrapping or unwrapping.
 
 REST API
 --------
@@ -60,7 +60,7 @@ For example, if the KID is specified as the string ``^kid1``, the actual KID val
 Root URL
 ^^^^^^^^
 
-.. note:: The URLs below are relative to a root URL for the Key Management Service on a server. In these examples, the root URL path is ``/``. But a server may use a different root URL path. For example, if the Key Management Service on a server named ``skm.example.com`` is at a root URL path ``services/skm``, then the URL relative path ``keys/{kid}`` would result in a final URL ``http://skm.example.com/services/skm/keys/{kid}``
+.. note:: The URLs below are relative to a root URL for the Key Management Service on a server. In these examples, the root URL path is ``/``. But a server may use a different root URL path. For example, if the Key Management Service on a server named ``api.service.expressplay.com`` is at a root URL path ``/keystore``, then the URL relative path ``keys/{kid}`` would result in a final URL ``https://api.service.expressplay.com/keystore/keys/{kid}`` if accessed with HTTPS.
 
 API URLs
 ^^^^^^^^
@@ -77,7 +77,7 @@ API URLs
     If the KID is not specified, a new random KID is chosen by the server. If the KID is specified, a new object is created with the specified KID, unless a Key object with the same KID already exists, in which case the rest of the POST body is ignored and the existing Key object is returned with an ``HTTP 200`` status code.
   
   k
-    If the cleartext Key Value is not specified, a new random key value will be chosen, using a cryptographically-strong random number generator.
+    If the clear-text Key Value is not specified, a new random key value will be chosen, using a cryptographically-strong random number generator.
   
   ek
     If the encrypted Key Value is not specified, a new random key value will be chosen, using a cryptographically-strong random number generator.
@@ -151,7 +151,7 @@ API URLs
 
   :query kek: (optional) KEK used to unwrap the key value
   :<json string kid: KID (32 hex characters)
-  :<json string k: Cleartext Key value (hex) [requires that the 'kek' query parameter be passed]
+  :<json string k: Clear-text Key value (hex) [requires that the 'kek' query parameter be passed]
   :<json string ek: Encrypted Key value (hex) [mutually exclusive with the presence of a 'k' field]
   :<json string kekId: (optional) KEK Id
   :<json string info: (optional) Key info
@@ -186,7 +186,7 @@ API URLs
     HTTP/1.1 200 OK
 
   :query kek: (optional) KEK used to unwrap the key value
-  :<json string k: Cleartext Key value (hex) [requires that the 'kek' query parameter be passed]
+  :<json string k: Clear-text Key value (hex) [requires that the 'kek' query parameter be passed]
   :<json string ek: Encrypted Key value (hex) [mutually exclusive with the presence of a 'k' field]
   :<json string kekId: (optional) KEK Id
   :<json string info: (optional) Key info
@@ -255,7 +255,7 @@ API URLs
   Returns one Key value
 
   Instead of returning a complete JSON Key object, this request returns only the Key Value, as a hex string.
-  If a KEK is passed in the `kek` query parameter, the response body contains the raw cleartext value of the Key object. If no KEK is passed, the response body contains the encrypted Key Value, prefixed with a ``#`` characater
+  If a KEK is passed in the `kek` query parameter, the response body contains the raw clear-text value of the Key object. If no KEK is passed, the response body contains the encrypted Key Value, prefixed with a ``#`` character
 
   **Example Request (with KEK)**
 
@@ -298,7 +298,7 @@ API URLs
 
   Returns mutliple Key objects
 
-  When multiple KIDs are specified, separated by ',' characters, mutliple Key objects can be retrieved with a single request. Just like for other requests, each KID may be expressed as a 32-character hex string, or a '^' followed by an arbitrary string.
+  When multiple KIDs are specified, separated by ',' characters, multiple Key objects can be retrieved with a single request. Just like for other requests, each KID may be expressed as a 32-character hex string, or a '^' followed by an arbitrary string.
   The response body contains a JSON array of Key objects
 
   **Example Request**
@@ -338,9 +338,9 @@ API URLs
 
 .. http:get:: /keys/{kid1},{kid2},.../value
 
-  Returns mutliple Key object values
+  Returns multiple Key object values
 
-  This variant of the multiple-KID request returns the key values only instead of an array of JSON Key objects. As with the single-KID Key value request, the response body contains Key values either in raw cleartext form (when a KEK is passed), or in wrapped form (prefixed with ``'#'``).
+  This variant of the multiple-KID request returns the key values only instead of an array of JSON Key objects. As with the single-KID Key value request, the response body contains Key values either in raw clear-text form (when a KEK is passed), or in wrapped form (prefixed with ``'#'``).
   The Key values in the response body are separated by ``','`` characters
 
   **Example Request (with KEK)**
