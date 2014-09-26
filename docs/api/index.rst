@@ -97,8 +97,8 @@ API URLs
 
   The response contains a JSON object representing the Key object that was created or found.
 
-.. note::
-  It is important to set the ``Content-Type`` HTTP header to ``application/json`` when issuing a ``POST`` request with a JSON body
+  .. note::
+    It is important to set the ``Content-Type`` HTTP header to ``application/json`` when issuing a ``POST`` request with a JSON body
 
   **Example Request: create a new random Key object**
 
@@ -172,8 +172,8 @@ API URLs
 
   The ``PUT`` body must contain a JSON object for a partial or complete Key object. Fields that are not specified in the body will not be updated. The ``kid`` field, if present in the body, is ignored.
 
-.. note::
-  It is important to set the ``Content-Type`` HTTP header to ``application/json`` when issuing a ``PUT`` request with a JSON body
+  .. note::
+    It is important to set the ``Content-Type`` HTTP header to ``application/json`` when issuing a ``PUT`` request with a JSON body
 
   **Example Request: change the contentId of a Key object**
 

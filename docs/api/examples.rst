@@ -101,12 +101,13 @@ Wrapping keys client-side
 
 Sometimes it may be desirable to perform key wrapping/unwrapping on the client side, instead of passing a KEK (Key Encryption Key) and ask the server to do it. For instance, the client may want to use a specific cryptographic random number generator, or may not want to pass a KEK to the server.
 This, of course, requires the client to be able to perform the proper AES Key Wrap cryptographic operations.
+To keep the wrapping/unwrapping entirely client-side, simply ommit the ``kek`` query parameter in requests and supply the ``ek`` value when creating the key.
 
   **Request**
 
   .. sourcecode:: http
 
-    POST /keys?kek=000102030405060708090a0b0c0d0e0f HTTP/1.1
+    POST /keys HTTP/1.1
     Content-Type: application/json
 
     {
