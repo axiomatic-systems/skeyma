@@ -34,6 +34,10 @@ function httpErrorResponse(response, statusCode, errorCode, errorMessage) {
     response.end('{ "code":'+errorCode+', "message":"'+errorMessage+'"}');
 }
 
+function httpInternalErrorResponse(response) {
+    httpErrorResponse(response, 500, ERR_INTERNAL, 'Internal Server Error');
+}
+
 function kidFromString(kid) {
     if (kid.indexOf('^') == 0) {
         // derive the KID using a hash
@@ -50,7 +54,7 @@ function parseKidList(kids, response) {
     for (var i=0; i<kid_selector.length; i++) {
         var kid = kidFromString(kid_selector[i]);
         if (!checkKid(kid)) {
-            httpErrorResponse(response, 400, ERR_INVALID_PARAMETERS, 'invalid kid');
+            httpErrorResponse(response, 400, ERR_INVALID_PARAMETERS, 'Invalid KID');
             return null;
         }
 
@@ -72,7 +76,7 @@ function storeNewKey(response, kek, key) {
     if (!key.ek) {
         key.ek = keywrap.wrapKey(key.k, kek).toString('hex');
         if (!key.ek) {
-            httpErrorResponse(response, 500, ERR_INTERNAL, "Internal Error");
+            httpInternalErrorResponse(response);
             return;
         }
     }
@@ -87,11 +91,13 @@ function storeNewKey(response, kek, key) {
     }
     db.createKey(key, function(err, result) {
         if (err) {
-            console.log('createKey error:', err);
+            if (options.debug) {
+                console.log('createKey error:', err);
+            }
             if (err === results.CONSTRAINT) {
                 getKeys(response, key.kid, kek, false);
             } else {
-                httpErrorResponse(response, 500, ERR_INTERNAL, "Internal Error");
+                httpInternalErrorResponse(response);
             }
             return;
         }
@@ -150,8 +156,10 @@ function getKeys(response, kids, kek, valueOnly) {
     }
     db.getKeys(kid_selector, function(err, keys) {
         if (err) {
-            console.log(err);
-            httpErrorResponse(response, 500, ERR_INTERNAL, "internal server error");
+            if (options.debug) {
+                console.log(err);
+            }
+            httpInternalErrorResponse(response);
             return;
         }
         if (keys && keys.length > 0) {
@@ -162,7 +170,7 @@ function getKeys(response, kids, kek, valueOnly) {
                     if (unwrapped) {
                         key.k = unwrapped.toString('hex');
                     } else {
-                        httpErrorResponse(response, 400, ERR_INCORRECT_KEK, "incorrect KEK");
+                        httpErrorResponse(response, 400, ERR_INCORRECT_KEK, "Incorrect KEK");
                         return;
                     }
                     delete key.ek;
@@ -201,8 +209,10 @@ function deleteKey(response, kids) {
     }
     db.deleteKeys(kids, function(err, result) {
         if (err) {
-            console.log(err);
-            httpErrorResponse(response, 500, ERR_INTERNAL, "Internal Error");
+            if (options.debug) {
+                console.log(err);
+            }
+            httpInternalErrorResponse(response);
             return;
         }
         response.statusCode = 200;
@@ -214,17 +224,17 @@ function updateKey(response, kid, key, kek) {
     kid = kidFromString(kid);
 
     if (!checkKid(kid) || !checkKey(key)) {
-        httpErrorResponse(response, 400, ERR_INVALID_PARAMETERS, 'invalid parameters');
+        httpErrorResponse(response, 400, ERR_INVALID_PARAMETERS, 'Invalid Parameters');
         return;
     }
     if (key.k && !key.ek) {
         if (!kek) {
-            httpErrorResponse(response, 400, ERR_INVALID_PARAMETERS, 'kek required');
+            httpErrorResponse(response, 400, ERR_INVALID_PARAMETERS, 'KEK Required');
             return;
         }
         key.ek = keywrap.wrapKey(key.k, kek).toString('hex');
         if (!key.ek) {
-            httpErrorResponse(response, 500, ERR_INTERNAL, "Internal Error");
+            httpInternalErrorResponse(response);
             return;
         }
     }
@@ -234,7 +244,7 @@ function updateKey(response, kid, key, kek) {
                 response.statusCode = 404;
                 response.end('Not Found');
             } else {
-                httpErrorResponse(response, 500, ERR_INTERNAL, "Internal Error");
+                httpInternalErrorResponse(response);
             }
             return;
         }
@@ -244,12 +254,20 @@ function updateKey(response, kid, key, kek) {
 }
 
 function isHex(str) {
-    return true; // TODO
+    for (var i=0; i<str.length; i++) {
+        var c = str[i];
+        if (!( (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))) {
+            return false;
+        } 
+    }
+    return true;
 }
 
 function checkKey(key) {
     if (key.kid) {
-        if (!isHex(key.kid)) return false;
+        if (key.kid.indexOf('^') != 0) {
+            if (!isHex(key.kid)) return false;
+        }
     }
     if (key.k) {
         if (!isHex(key.k)) return false;
@@ -283,16 +301,27 @@ function parseJsonBody(request, response, callback) {
         body += data;
     });
     request.on('end', function () {
-        var key = {}
-        if (body) {
-            try {
-                key = JSON.parse(body);
-            } catch(err) {
-                httpErrorResponse(response, 400, ERR_INVALID_SYNTAX, "invalid JSON body");
-                return;
+        try {
+            var key = {}
+            if (body) {
+                try {
+                    key = JSON.parse(body);
+                    if (!checkKey(key)) {
+                        httpErrorResponse(response, 400, ERR_INVALID_SYNTAX, "Invalid Key Object");
+                        return;
+                    }
+                } catch(err) {
+                    httpErrorResponse(response, 400, ERR_INVALID_SYNTAX, "Invalid JSON Body");
+                    return;
+                }
             }
+            callback(key);
+        } catch (err) {
+            if (options.debug) {
+                console.log(err);
+            }
+            httpInternalErrorResponse(response);
         }
-        callback(key);
     });
 }
 
@@ -300,55 +329,55 @@ var pathExp1 = /^\/keys\/?$/i;
 var pathExp2 = /^\/keys\/([^\/]+)(\/value)?\/?$/i;
 
 var server = http.createServer(function (request, response) {
-    accesslog(request, response);
+    try {
+        accesslog(request, response);
 
-    response.setHeader('Access-Control-Allow-Origin', '*');
+        response.setHeader('Access-Control-Allow-Origin', '*');
 
-    parsedUrl = url.parse(request.url, true);
-    if (!checkParameters(parsedUrl.query)) {
-        httpErrorResponse(response, 400, ERR_INVALID_PARAMETERS, 'invalid parameters');
-        return;
-    }
+        parsedUrl = url.parse(request.url, true);
+        if (!checkParameters(parsedUrl.query)) {
+            httpErrorResponse(response, 400, ERR_INVALID_PARAMETERS, 'Invalid Parameters');
+            return;
+        }
 
-    var match;
-    if (match = pathExp1.exec(parsedUrl.pathname)) {
-        if (request.method == 'GET') {
-            getAllKeys(response, parsedUrl.query.kek);
-        } else if (request.method == 'POST') {
-            parseJsonBody(request, response, function(key) {
-                if (!parsedUrl.query.kek) {
-                    // no kek was passed, check that an encrypted key was supplied
-                    if (!key.ek) {
-                        httpErrorResponse(response, 400, ERR_INVALID_PARAMETERS, "no kek passed: ek required");
-                        return;
+        var match;
+        if (match = pathExp1.exec(parsedUrl.pathname)) {
+            if (request.method == 'GET') {
+                getAllKeys(response, parsedUrl.query.kek);
+            } else if (request.method == 'POST') {
+                parseJsonBody(request, response, function(key) {
+                    if (!parsedUrl.query.kek) {
+                        // no kek was passed, check that an encrypted key was supplied
+                        if (!key.ek) {
+                            httpErrorResponse(response, 400, ERR_INVALID_PARAMETERS, "No KEK passed: ek required");
+                            return;
+                        }
                     }
-                }
-                createNewKey(response, parsedUrl.query.kek, key);
-            });
+                    createNewKey(response, parsedUrl.query.kek, key);
+                });
+            } else {
+                response.statusCode = 405;
+                response.end('Method Not Allowed');
+            }
+        } else if (match = pathExp2.exec(parsedUrl.pathname)) {
+            if (request.method == 'GET') {
+                getKeys(response, match[1], parsedUrl.query.kek, match[2]?true:false);
+            } else if (request.method == 'DELETE' && !match[2]) {
+                deleteKey(response, match[1]);
+            } else if (request.method == 'PUT' && !match[2]) {
+                parseJsonBody(request, response, function(key) {
+                    updateKey(response, match[1], key, parsedUrl.query.kek);
+                });
+            } else {
+                response.statusCode = 405;
+                response.end('Method Not Allowed');
+            }
         } else {
-            response.statusCode = 405;
-            response.end('Method Not Allowed');
+            response.statusCode = 404;
+            response.end('Not Found');
         }
-    } else if (match = pathExp2.exec(parsedUrl.pathname)) {
-        if (request.method == 'GET') {
-            getKeys(response, match[1], parsedUrl.query.kek, match[2]?true:false);
-        } else if (request.method == 'DELETE' && !match[2]) {
-            deleteKey(response, match[1]);
-        } else if (request.method == 'PUT' && !match[2]) {
-            parseJsonBody(request, response, function(key) {
-                updateKey(response, match[1], key, parsedUrl.query.kek);
-            });
-        } else {
-            response.statusCode = 405;
-            response.end('Method Not Allowed');
-        }
-    } else if (parsedUrl.pathname.indexOf('/api-docs') == 0) {
-        send(request, parsedUrl.pathname.replace('/api-docs', ''))
-            .root(path.join(__dirname, 'docs/api-docs'))
-            .pipe(response);
-    } else {
-        response.statusCode = 404;
-        response.end('Not Found');
+    } catch(e) {
+        httpInternalErrorResponse(response);
     }
 });
 
@@ -366,7 +395,7 @@ db.on('open', function() {
     server.listen(options.port);
 });
 db.on('error', function(err) {
-    console.log('CANNOT OPEN DB');
-    console.log(err);
+    console.error('CANNOT OPEN DB');
+    console.error(err);
 })
 
