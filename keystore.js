@@ -135,10 +135,9 @@ function getKeyCount(response) {
             httpInternalErrorResponse(response);
             return;
         }
-        var count = result.toString();
-        response.setHeader("Content-Type", "text/plain");
+        response.setHeader("Content-Type", "application/json");
         response.statusCode = 200;
-        response.end(count);
+        response.end(JSON.stringify({keyCount: result}));
     });
 }
 

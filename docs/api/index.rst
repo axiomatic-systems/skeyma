@@ -444,7 +444,7 @@ API URLs
 
 .. http:get:: /keycount
 
-  Returns the number of Key objects stored on the server
+  Returns the number of Key objects stored on the server, as a JSON object with a "keyCount" integer field
 
   **Example Request**
 
@@ -457,8 +457,10 @@ API URLs
   .. sourcecode:: http
 
     HTTP/1.1 200 OK
-    Content-Type: text/plain
+    Content-Type: application/json
 
-    1567
+    { 
+      "keyCount": 1567
+    }
 
   :statuscode 200: no error
