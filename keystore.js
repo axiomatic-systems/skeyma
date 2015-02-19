@@ -126,6 +126,22 @@ function createNewKey(response, kek, key) {
     }
 }
 
+function getKeyCount(response) {
+    db.getKeyCount(function(err, result) {
+        if (err) {
+            if (options.debug) {
+                console.log(err);
+            }
+            httpInternalErrorResponse(response);
+            return;
+        }
+        var count = result.toString();
+        response.setHeader("Content-Type", "text/plain");
+        response.statusCode = 200;
+        response.end(count);
+    });
+}
+
 function getAllKeys(response, kek) {
     response.statusCode = 200;
     response.setHeader("Content-Type", "application/json");
@@ -372,6 +388,8 @@ var server = http.createServer(function (request, response) {
                 response.statusCode = 405;
                 response.end('Method Not Allowed');
             }
+        } else if (parsedUrl.pathname == "/keycount") {
+            getKeyCount(response);
         } else {
             response.statusCode = 404;
             response.end('Not Found');

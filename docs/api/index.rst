@@ -15,7 +15,7 @@ A Key object has the following properties:
   * KEK_ID (String that identifies a KEK. May be derived from KEK through a one-way function)
   * Info (arbitrary string)
   * Content ID (arbitrary string used to remember the association of the key with a specific content/file)
-  * Expiration (if not null, the date/time at which the key object expired; it may be removed automatically by the server)
+  * Expiration (if not null, the date/time at which the Key object expired; it may be removed automatically by the server)
   * Last Update (date/time at which the Key object was last updated)
 
 **JSON representation**
@@ -162,7 +162,7 @@ API URLs
   :<json string expiration: (optional) Object expiration data/time
 
   :statuscode 200: an existing Key object was found and returned
-  :statuscode 201: a new key object successfully created
+  :statuscode 201: a new Key object successfully created
 
 .. -------------------------------------------------------------------------------------------------
 
@@ -220,13 +220,12 @@ API URLs
     HTTP/1.1 200 OK
     Content-Type: application/json
 
-    [
-      {
-        "kid":   "11a48707853ed5f13485f161523ffdc4",
-        "ek":    "b6862c586af0d70fdc594deb7b254bb38937113dbc6411ea",
-        "kekId": "#1.afe008a381bdac03b412a92d54b92ddf"
-      }
-    ]
+    {
+      "kid":   "11a48707853ed5f13485f161523ffdc4",
+      "ek":    "b6862c586af0d70fdc594deb7b254bb38937113dbc6411ea",
+      "kekId": "#1.afe008a381bdac03b412a92d54b92ddf"
+    }
+    
 
   **Example Request (with KEK)**
 
@@ -282,7 +281,7 @@ API URLs
 
   .. sourcecode:: http
 
-    GET /keys/keys/00112233445566778899aabbccddeefc/value HTTP/1.1
+    GET /keys/00112233445566778899aabbccddeefc/value HTTP/1.1
 
   **Example Response**
 
