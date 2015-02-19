@@ -240,13 +240,13 @@ API URLs
     HTTP/1.1 200 OK
     Content-Type: application/json
 
-    [
-      {
-        "kid":   "11a48707853ed5f13485f161523ffdc4",
-        "k":     "d4783a651c96a872daa145ce1a378153",
-        "kekId": "#1.afe008a381bdac03b412a92d54b92ddf"
-      }
-    ]
+    
+    {
+      "kid":   "11a48707853ed5f13485f161523ffdc4",
+      "k":     "d4783a651c96a872daa145ce1a378153",
+      "kekId": "#1.afe008a381bdac03b412a92d54b92ddf"
+    }
+    
 
   :query kek: (optional) KEK used to unwrap the key value
   :statuscode 200: no error
