@@ -94,13 +94,14 @@ or, if we want the server to auto-create the key if it doesn't already exist:
 .. http:post:: /keys
 
   .. sourcecode:: http
+
     Content-Type: application/json
 
     {
       "kid": "^CNN.2014.12.18"
     }
 
-    This is much more convenient than having to remember a different random KID for each day for each channel.
+  This is much more convenient than having to remember a different random KID for each day for each channel.
 
 Wrapping keys client-side
 -------------------------
