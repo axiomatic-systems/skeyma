@@ -65,7 +65,7 @@ Root URL
 API URLs
 ^^^^^^^^
 
-.. http:post:: /keys/{kid}
+.. http:post:: /keys
 
   Create a new Key object
 

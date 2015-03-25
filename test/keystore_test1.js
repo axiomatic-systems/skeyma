@@ -401,6 +401,17 @@ var test23 = makeTest(
         });
     });
 
+var test24 = makeTest(
+    'check that the keycount is correct',
+    function(callback) {
+        callApi('/keycount', 'GET', null, callback, function(response) {
+            checkEqual('HTTP status code', response.statusCode, 200);
+            checkResponseMimeType(response);
+            var keyCount = JSON.parse(response.body);
+            checkEqual('keyCount', keyCount.keyCount, 8);
+        });
+    });
+
 async.series([
-    test1, test2, test3, test4, test5, test6, test7, test8, test9, test10, test11, test12, test13, test14, test15, test16, test17, test18, test19, test20, test21, test22, test23
+    test1, test2, test3, test4, test5, test6, test7, test8, test9, test10, test11, test12, test13, test14, test15, test16, test17, test18, test19, test20, test21, test22, test23, test24
 ])
