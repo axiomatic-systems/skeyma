@@ -43,12 +43,12 @@ REST API
 Common API parameters
 ^^^^^^^^^^^^^^^^^^^^^
 
-:query kek: (optional). When specified, this parameter contains the 16-byte KEK used to unwrap the key value, in hexadecimal (32 hex characters)
+:kek: (optional). When specified, this parameter contains the 16-byte KEK used to unwrap the key value, in hexadecimal (32 hex characters)
 
 Optional API parameters and extensions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note:: Some implementations of the SKM API require API callers to authenticate themselves. This may be implemented in a number of different ways, including using a URL query parameter (like for example an API key passed in a query parameter, named ``apiKey``, ``customerAuthenticator``, or something similar).
+.. note:: Some implementations of the SKM API require API callers to authenticate themselves. This may be implemented in a number of different ways, including using a URL query parameter (like for example an API key passed in a query parameter, named ``apiKey``, ``customerAuthenticator``, or something similar). URL query parameters must be separated with an ``&`` character.
 
 Special KID syntax
 ^^^^^^^^^^^^^^^^^^
