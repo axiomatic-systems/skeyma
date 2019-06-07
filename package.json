@@ -1,34 +1,46 @@
 {
-  "name": "skeyma",
-  "description": "A Simple Key Manager Server",
+  "name": "garasi-key-manager",
   "version": "0.0.1",
-  "author": "Gilles Boccon-Gibod. <bok@bok.net>",
-  "maintainers": [
-    "barbibulle <bok@bok.net>"
-  ],
+  "description": "A Simple Key Manager Server based on Skeyma Project",
+  "main": "keystore.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib",
+    "test": "test"
+  },
+  "dependencies": {
+    "access-log": "^0.4.1",
+    "async": "^3.0.1",
+    "commander": "^2.20.0",
+    "send": "^0.17.1",
+    "sqlite3": "^4.0.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node keystore.js --debug"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/axiomatic-systems/skeyma"
+    "url": "git+https://github.com/garasingulik/garasi-key-manager.git"
   },
   "keywords": [
     "key",
     "server"
   ],
-  "dependencies": {
-    "access-log": "0.3.x",
-    "async": "0.9.x",
-    "commander": "2.1.x",
-    "send": "0.2.x",
-    "sqlite3": "2.2.x"
-  },
-  "main": "keystore.js",
-  "engines": {
-    "node": ">= 0.8.0"
-  },
+  "author": "Gilles Boccon-Gibod. <bok@bok.net>",
+  "maintainers": [
+    "barbibulle <bok@bok.net>",
+    "feedsbrain <feedsbrain@gmail.com>"
+  ],
   "licenses": [
     {
       "type": "MIT",
       "url": "https://github.com/axiomatic-systems/LICENSE"
     }
-  ]
+  ],
+  "bugs": {
+    "url": "https://github.com/garasingulik/garasi-key-manager/issues"
+  },
+  "homepage": "https://github.com/garasingulik/garasi-key-manager#readme"
 }
