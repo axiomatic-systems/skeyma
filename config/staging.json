@@ -1,0 +1,11 @@
+{
+    "drm": {
+        "widevine": {
+            "privateKey": "1ae8ccd0e7985cc0b6203a55855a1034afc252980e970ca90e5202689f947ab9",
+            "privateKeyIV": "d58ce954203b7c9a9a9d467f59839249",
+            "provider": "widevine_test",
+            "licenseURL": "https://license.uat.widevine.com/cenc/getlicense",
+            "contentURL": "https://license.uat.widevine.com/cenc/getcontentkey"
+        }
+    }
+}

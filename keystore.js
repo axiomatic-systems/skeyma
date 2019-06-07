@@ -7,21 +7,7 @@ const keywrap = require('./lib/keywrap.js')
 const results = require('./lib/results.js')
 const helper = require('./lib/helper')
 const types = require('./lib/types')
-
-var db
-
-// parse the command line options
-options
-  .version('1.0.0')
-  .option('-p, --port [port]', 'Listen on port number [port] (default 8000)', 8000)
-  .option('-l, --log-level [log-level]', 'Logging level (between 0 and 10, default=1)', 1)
-  .option('-o, --log-output [log-output-file]', 'Log output file name (default=stdout)')
-  .option('-r, --root [url-root]', 'Root URL path at which the API is exposed (default=/)', '/')
-  .option('-b, --db [module:params]', 'Database configuration (default=sqlite3:keys.db)', 'sqlite3:keys.db')
-  .option('-d, --debug', 'Debug mode')
-  .parse(process.argv)
-options.port = parseInt(options.port)
-options.logLevel = parseInt(options.logLevel)
+const db = require('./lib//db')
 
 function kidFromString (kid) {
   if (kid.indexOf('^') === 0) {
@@ -388,22 +374,4 @@ var server = http.createServer(function (request, response) {
   } catch (e) {
     helper.httpInternalErrorResponse(response)
   }
-})
-
-if (options.db.indexOf('sqlite3:') >= 0) {
-  db = require('./lib/db_sqlite3').openKeyDatabase(options.db.slice(8), options)
-} else {
-  console.error('ERROR: unknown DB type')
-  process.exit(1)
-}
-
-db.on('open', function () {
-  if (options.debug) {
-    console.log('STARTING server on port', options.port)
-  }
-  server.listen(options.port)
-})
-db.on('error', function (err) {
-  console.error('CANNOT OPEN DB')
-  console.error(err)
 })

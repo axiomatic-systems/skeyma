@@ -1,0 +1,9 @@
+{
+    "db": {
+        "type": "sqlite",
+        "sqlite": {
+            "verbose": false,
+            "connectionString": "keys.db"
+        }
+    }
+}
